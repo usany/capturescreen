@@ -1,0 +1,97 @@
+/*
+  src/styles/tailwind.input.css
+  Author: client-side-writer
+  Created: 2026-07-26
+
+  Compiled to public/styles/tailwind.css by `deno task build:css`.
+  Tailwind v4 via @tailwindcss/cli — no Play CDN, so the test run is offline
+  and deterministic (planner A6).
+*/
+
+@import "tailwindcss";
+
+/*
+  Explicit sources. Tailwind v4 auto-detects, but this input file lives in
+  src/styles/ while the only markup lives in public/ — spelling both out means a
+  class cannot silently fail to be generated because detection walked the wrong
+  way up the tree.
+*/
+@source "../../public/index.html";
+@source "../client";
+
+/*
+  Load-bearing, not cosmetic.
+
+  Components show and hide by toggling the `hidden` attribute (see dom.ts), and
+  the UA stylesheet's `[hidden] { display: none }` is a *display* rule — any
+  Tailwind display utility on the same element (`flex`, `grid`, `block`) has
+  higher specificity and wins, leaving a "hidden" element fully visible.
+  `download-bar` is `flex`, so without this the download buttons would be on
+  screen before the first capture and the e2e default-state assertion would fail.
+*/
+[hidden] {
+  display: none !important;
+}
+
+/* The status pill's colour tracks the readiness reported by /api/status.
+   Written as attribute selectors rather than classes swapped from JS, so the
+   compiler can never tree-shake a colour that only appears in a TS string. */
+[data-testid="status-banner"] {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+[data-testid="status-banner"][data-status="ready"] {
+  background-color: #dcfce7;
+  color: #166534;
+}
+[data-testid="status-banner"][data-status="starting"] {
+  background-color: #fef9c3;
+  color: #854d0e;
+}
+[data-testid="status-banner"][data-status="degraded"],
+[data-testid="status-banner"][data-status="unreachable"] {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* A dot before the label, sized from the current text colour. */
+@utility status-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: currentColor;
+}
+
+/* The one animation in the app: the capture spinner. */
+@utility spinner-ring {
+  border-radius: 9999px;
+  border-width: 3px;
+  border-color: #e2e8f0;
+  border-top-color: #2563eb;
+  animation: spinner-spin 0.7s linear infinite;
+}
+
+@keyframes spinner-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Checkerboard behind the preview so a screenshot with transparent regions is
+   distinguishable from one with a white background. */
+@utility preview-checkerboard {
+  background-color: #ffffff;
+  background-image: linear-gradient(45deg, #f1f5f9 25%, transparent 25%),
+    linear-gradient(-45deg, #f1f5f9 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #f1f5f9 75%),
+    linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-testid="loading-spinner"] * {
+    animation: none !important;
+  }
+}
