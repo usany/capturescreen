@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "claude_generate_image"
-    ]
-  }
-}

@@ -5,6 +5,10 @@
 .vscode/
 .idea/
 
+# Settings files
+**/.claude/settings.json
+**/.claude/settings.local.json
+
 # Codex 배치 디버그 로그 (큰 stdout 파일들, 재현 가능)
 **/.codex-imagegen-logs/
 
