@@ -1,0 +1,10 @@
+services:
+  url-screenshot:
+    build: .
+    image: url-screenshot:latest
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      ALLOW_PRIVATE_HOSTS: "true"
+    restart: unless-stopped

@@ -1,0 +1,19 @@
+.git
+.gitignore
+.claude
+_workspace
+node_modules
+.DS_Store
+*.log
+
+# Secrets — never copied into the image
+.env
+.env.local
+
+# Playwright / test output
+test-results/
+playwright-report/
+
+# Rebuilt inside the image by `deno task build`
+public/js/app.js
+public/styles/tailwind.css
