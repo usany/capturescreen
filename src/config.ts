@@ -21,7 +21,7 @@ export const DEFAULTS = {
 /** Validation bounds. Min and max are both INCLUSIVE. */
 export const LIMITS = {
   minWidth: 200,
-  maxWidth: 5000,
+  maxWidth: 5_000,
   minHeight: 200,
   maxHeight: 20_000,
   minQuality: 1,
