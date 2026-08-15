@@ -20,16 +20,18 @@
 
 import { $, on, setData, setHidden, setText } from "../dom.ts";
 import { fetchStatus } from "../api.ts";
+import { t } from "../i18n.ts";
 import type { AppState, Store } from "../store.ts";
 import type { Actions } from "../actions.ts";
 import { validateUrlShape } from "./urlInput.ts";
 
-const LABELS: Record<string, string> = {
-  ready: "Ready",
-  starting: "Starting…",
-  degraded: "Degraded",
-  unreachable: "Unreachable",
-  checking: "Checking…",
+/** server status -> i18n key; unknown statuses render the raw value. */
+const STATUS_KEYS: Record<string, string> = {
+  ready: "statusReady",
+  starting: "statusStarting",
+  degraded: "statusDegraded",
+  unreachable: "statusUnreachable",
+  checking: "statusChecking",
 };
 
 export function mountStatusBanner(root: ParentNode, store: Store, actions: Actions): void {
@@ -38,8 +40,9 @@ export function mountStatusBanner(root: ParentNode, store: Store, actions: Actio
   const captureBtn = $<HTMLButtonElement>("capture-btn", root);
 
   const setBannerState = (key: string) => {
+    const lang = store.getState().lang;
     setData(banner, "status", key);
-    setText(text, LABELS[key] ?? key);
+    setText(text, t(lang, STATUS_KEYS[key] ?? key));
     setHidden(banner, false);
   };
 
@@ -52,7 +55,7 @@ export function mountStatusBanner(root: ParentNode, store: Store, actions: Actio
     const busy = state.status === "loading";
     captureBtn.disabled = busy || !urlOk;
     captureBtn.setAttribute("aria-busy", busy ? "true" : "false");
-    setText(captureBtn, busy ? "Capturing…" : "Capture");
+    setText(captureBtn, t(state.lang, busy ? "capturing" : "capture"));
   };
 
   on(captureBtn, "click", () => void actions.capture());

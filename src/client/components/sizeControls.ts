@@ -18,6 +18,7 @@
 // but `reset-size-btn` always re-reads the *live* screen, never the stored copy.
 
 import { $, on, setHidden, setText, win } from "../dom.ts";
+import { type Lang, t } from "../i18n.ts";
 import type { Store } from "../store.ts";
 
 export const SIZE_STORAGE_KEY = "urlshot:size";
@@ -91,13 +92,13 @@ export function getInitialSize(): Size {
   return readStoredSize() ?? getScreenDefaults();
 }
 
-function describeProblem(size: Size): string | null {
+function describeProblem(size: Size, lang: Lang = "en"): string | null {
   const { minWidth, maxWidth, minHeight, maxHeight } = SIZE_LIMITS;
   if (!Number.isFinite(size.width) || size.width < minWidth || size.width > maxWidth) {
-    return `Width must be between ${minWidth} and ${maxWidth}.`;
+    return t(lang, "widthRange", { min: minWidth, max: maxWidth });
   }
   if (!Number.isFinite(size.height) || size.height < minHeight || size.height > maxHeight) {
-    return `Height must be between ${minHeight} and ${maxHeight}.`;
+    return t(lang, "heightRange", { min: minHeight, max: maxHeight });
   }
   return null;
 }
@@ -116,7 +117,8 @@ export function mountSizeControls(root: ParentNode, store: Store): void {
 
   const commit = () => {
     const size = readInputs();
-    const problem = describeProblem(size);
+    const lang = store.getState().lang;
+    const problem = describeProblem(size, lang);
 
     setText(errorEl, problem ?? "");
     setHidden(errorEl, problem === null);
@@ -134,11 +136,13 @@ export function mountSizeControls(root: ParentNode, store: Store): void {
 
   on(resetBtn, "click", () => {
     const defaults = getScreenDefaults();
+    const lang = store.getState().lang;
     widthInput.value = String(defaults.width);
     heightInput.value = String(defaults.height);
     store.setState(defaults);
     writeStoredSize(defaults);
-    setHidden(errorEl, describeProblem(defaults) === null);
+    setHidden(errorEl, describeProblem(defaults, lang) === null);
+    if (errorEl.textContent) setText(errorEl, describeProblem(defaults, lang) ?? "");
   });
 
   on(fullPageToggle, "change", () => {
@@ -153,11 +157,18 @@ export function mountSizeControls(root: ParentNode, store: Store): void {
       heightInput.value = String(state.height);
     }
     if (fullPageToggle.checked !== state.fullPage) fullPageToggle.checked = state.fullPage;
+
+    // A language change should re-render an existing dimension error without a
+    // keystroke. Describing the current inputs keeps this consistent with the
+    // debounced `commit`.
+    const problem = describeProblem(readInputs(), state.lang);
+    setHidden(errorEl, problem === null);
+    setText(errorEl, problem ?? "");
   });
 
   const initial = store.getState();
   widthInput.value = String(initial.width);
   heightInput.value = String(initial.height);
   fullPageToggle.checked = initial.fullPage;
-  setHidden(errorEl, describeProblem(initial) === null);
+  setHidden(errorEl, describeProblem(initial, initial.lang) === null);
 }

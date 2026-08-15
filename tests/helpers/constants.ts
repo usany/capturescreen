@@ -100,4 +100,5 @@ export const TESTIDS = {
   statusBanner: "status-banner",
   statusText: "status-text",
   captureBtn: "capture-btn",
+  langBtn: "lang-btn",
 } as const;

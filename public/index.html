@@ -23,20 +23,31 @@
     <div data-testid="app-shell" class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
       <header class="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 class="text-2xl font-semibold tracking-tight">URL Screenshot</h1>
-          <p class="mt-1 text-sm text-slate-500">
+          <h1 class="text-2xl font-semibold tracking-tight" data-i18n="title">URL Screenshot</h1>
+          <p class="mt-1 text-sm text-slate-500" data-i18n="subtitle">
             Capture any page at any viewport size, then download it as PNG or JPEG.
           </p>
         </div>
 
-        <div
-          data-testid="status-banner"
-          role="status"
-          aria-live="polite"
-          class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium"
-        >
-          <span class="status-dot" aria-hidden="true"></span>
-          <span data-testid="status-text">Checking…</span>
+        <div class="flex flex-wrap items-center gap-3">
+          <div
+            data-testid="status-banner"
+            role="status"
+            aria-live="polite"
+            class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium"
+          >
+            <span class="status-dot" aria-hidden="true"></span>
+            <span data-testid="status-text">Checking…</span>
+          </div>
+
+          <button
+            data-testid="lang-btn"
+            type="button"
+            aria-label="Switch language"
+            class="shrink-0 rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-600 shadow-sm transition-colors hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-300"
+          >
+            한국어
+          </button>
         </div>
       </header>
 
@@ -44,11 +55,13 @@
       <section
         data-testid="control-panel"
         aria-label="Capture settings"
+        data-i18n="captureSettings"
+        data-i18n-attr="aria-label"
         class="flex flex-col gap-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
       >
         <!-- URL -->
         <div class="flex flex-col gap-2">
-          <label for="url-input" class="text-sm font-medium text-slate-700">Page URL</label>
+          <label for="url-input" class="text-sm font-medium text-slate-700" data-i18n="pageUrl">Page URL</label>
           <div class="flex flex-col gap-2 sm:flex-row">
             <input
               id="url-input"
@@ -58,6 +71,8 @@
               autocomplete="url"
               spellcheck="false"
               placeholder="https://example.com"
+              data-i18n="placeholder"
+              data-i18n-attr="placeholder"
               aria-describedby="url-error"
               class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
             />
@@ -87,7 +102,7 @@
               type="checkbox"
               class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300"
             />
-            <span>Auto-capture when I stop typing</span>
+            <span data-i18n="autoCapture">Auto-capture when I stop typing</span>
           </label>
         </div>
 
@@ -97,7 +112,7 @@
         <div class="flex flex-col gap-2">
           <div class="flex flex-wrap items-end gap-4">
             <div class="flex flex-col gap-1">
-              <label for="width-input" class="text-sm font-medium text-slate-700">Width</label>
+              <label for="width-input" class="text-sm font-medium text-slate-700" data-i18n="width">Width</label>
               <input
                 id="width-input"
                 data-testid="width-input"
@@ -113,7 +128,7 @@
             <span class="pb-2.5 text-slate-400" aria-hidden="true">×</span>
 
             <div class="flex flex-col gap-1">
-              <label for="height-input" class="text-sm font-medium text-slate-700">Height</label>
+              <label for="height-input" class="text-sm font-medium text-slate-700" data-i18n="height">Height</label>
               <input
                 id="height-input"
                 data-testid="height-input"
@@ -130,6 +145,8 @@
               data-testid="reset-size-btn"
               type="button"
               title="Reset to this screen's size"
+              data-i18n="resetSize"
+              data-i18n-title="resetSizeTitle"
               class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
             >
               Reset to screen size
@@ -150,7 +167,7 @@
         <!-- Output -->
         <div class="flex flex-wrap items-center gap-6">
           <div class="flex flex-col gap-1">
-            <label for="format-select" class="text-sm font-medium text-slate-700">Format</label>
+            <label for="format-select" class="text-sm font-medium text-slate-700" data-i18n="format">Format</label>
             <select
               id="format-select"
               data-testid="format-select"
@@ -163,7 +180,7 @@
 
           <!-- Hidden for PNG: quality is a JPEG-only setting. -->
           <div data-testid="quality-row" hidden class="flex flex-col gap-1">
-            <label for="quality-slider" class="text-sm font-medium text-slate-700">
+            <label for="quality-slider" class="text-sm font-medium text-slate-700" data-i18n="quality">
               Quality <span data-testid="quality-value" class="tabular-nums text-slate-500">90</span>
             </label>
             <input
@@ -184,7 +201,7 @@
               type="checkbox"
               class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300"
             />
-            <span>Full page</span>
+            <span data-i18n="fullPage">Full page</span>
           </label>
         </div>
       </section>
@@ -193,12 +210,14 @@
       <section
         data-testid="preview-pane"
         aria-label="Screenshot preview"
+        data-i18n="screenshotPreview"
+        data-i18n-attr="aria-label"
         class="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
       >
         <div
           class="preview-checkerboard flex min-h-64 items-center justify-center overflow-auto rounded-lg border border-dashed border-slate-200 p-3"
         >
-          <div data-testid="preview-empty" class="text-center text-sm text-slate-400">
+          <div data-testid="preview-empty" class="text-center text-sm text-slate-400" data-i18n="previewEmpty">
             Preview will appear here
           </div>
 
@@ -209,7 +228,7 @@
             class="flex flex-col items-center gap-3 text-sm text-slate-500"
           >
             <span class="spinner-ring block h-9 w-9" aria-hidden="true"></span>
-            <span>Capturing…</span>
+            <span data-i18n="capturing">Capturing…</span>
           </div>
 
           <!-- max-w-full h-auto: a 1980-wide capture scales down to fit while
@@ -243,6 +262,7 @@
         <a
           data-testid="download-btn"
           class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300"
+          data-i18n="download"
         >
           Download
         </a>
@@ -250,6 +270,7 @@
           data-testid="download-png-btn"
           type="button"
           class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
+          data-i18n="downloadPng"
         >
           Download as PNG
         </button>
@@ -257,6 +278,7 @@
           data-testid="download-jpeg-btn"
           type="button"
           class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
+          data-i18n="downloadJpeg"
         >
           Download as JPEG
         </button>

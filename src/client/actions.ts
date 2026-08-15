@@ -17,6 +17,7 @@
 
 import { requestScreenshot, toStoreError } from "./api.ts";
 import { preloadImage } from "./dom.ts";
+import { t } from "./i18n.ts";
 import type { Store } from "./store.ts";
 import type { ImageFormat } from "../types/api.ts";
 import { validateUrlShape } from "./components/urlInput.ts";
@@ -40,12 +41,15 @@ export function createActions(store: Store): Actions {
       // auto-capture timer and the download buttons are not gated by the DOM.
       if (state.status === "loading") return false;
 
-      const check = validateUrlShape(state.url);
+      const check = validateUrlShape(state.url, state.lang);
       if (!check.valid) {
         store.setState({
           status: "error",
           result: null,
-          error: { code: "INVALID_URL", message: check.reason ?? "Enter a valid http(s) URL" },
+          error: {
+            code: "INVALID_URL",
+            message: check.reason ?? t(state.lang, "invalidUrl"),
+          },
         });
         return false;
       }
