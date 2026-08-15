@@ -16,6 +16,7 @@
 import express, { type Express } from "express";
 import { fileURLToPath } from "node:url";
 import { mountRoutes } from "./routes/index.ts";
+import { createPageRouter } from "./routes/page.route.ts";
 import { errorMiddleware } from "./middleware/error.middleware.ts";
 import { notFoundMiddleware } from "./middleware/notFound.middleware.ts";
 
@@ -33,6 +34,11 @@ export function createApp(): Express {
   app.use(express.json({ limit: "1mb" }));
 
   mountRoutes(app);
+
+  // The page routes own `/`, `/en/`, `/ko/`. They come before `express.static`
+  // so the page document is rendered per-language from the single template,
+  // while static assets (js/css) still resolve from disk.
+  app.use(createPageRouter());
 
   app.use(express.static(PUBLIC_DIR, { extensions: ["html"] }));
 

@@ -15,7 +15,6 @@
 import { createStore } from "./store.ts";
 import type { AppState } from "./store.ts";
 import { createActions } from "./actions.ts";
-import { getInitialLang } from "./i18n.ts";
 import { getInitialSize } from "./components/sizeControls.ts";
 import { mountUrlInput } from "./components/urlInput.ts";
 import { mountSizeControls } from "./components/sizeControls.ts";
@@ -23,14 +22,12 @@ import { mountFormatSelector } from "./components/formatSelector.ts";
 import { mountPreviewPane } from "./components/previewPane.ts";
 import { mountDownloadBar } from "./components/downloadBar.ts";
 import { mountStatusBanner } from "./components/statusBanner.ts";
-import { mountLangSelector } from "./components/langSelector.ts";
 
 function initialState(): AppState {
   // Screen size, or a remembered size from a previous visit. See sizeControls
   // for why those two are not the same rule.
   const { width, height } = getInitialSize();
   return {
-    lang: getInitialLang(),
     url: "",
     width,
     height,
@@ -48,11 +45,6 @@ function initialState(): AppState {
 function start(): void {
   const store = createStore(initialState());
   const actions = createActions(store);
-
-  // Language toggle first: it writes every `data-i18n` static node, so mounting
-  // it before the components that read `state.lang` keeps the text consistent
-  // under the initial language.
-  mountLangSelector(document, store);
 
   // Status banner first: it owns `capture-btn`, and mounting it before the URL
   // field means the button is already in its correct disabled state by the time

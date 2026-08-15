@@ -16,7 +16,7 @@
   class cannot silently fail to be generated because detection walked the wrong
   way up the tree.
 */
-@source "../../public/index.html";
+@source "../../src/views/page.html";
 @source "../client";
 
 /*
@@ -82,7 +82,8 @@
    distinguishable from one with a white background. */
 @utility preview-checkerboard {
   background-color: #ffffff;
-  background-image: linear-gradient(45deg, #f1f5f9 25%, transparent 25%),
+  background-image:
+    linear-gradient(45deg, #f1f5f9 25%, transparent 25%),
     linear-gradient(-45deg, #f1f5f9 25%, transparent 25%),
     linear-gradient(45deg, transparent 75%, #f1f5f9 75%),
     linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);

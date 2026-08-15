@@ -14,37 +14,23 @@
 // is an exact wait on "the capture finished", with no polling and no arbitrary
 // timeout.
 //
-// Server readiness is shown but never gates the button. `/api/status` can report
-// "starting" while chromium boots, and a capture issued then simply waits for the
-// lazy launch — blocking the button would turn a 700 ms warmup into a dead UI.
+// `status-banner` is a runtime-created indication of the capture itself: it is
+// shown ONLY while a capture is in flight (state "loading") and hidden at every
+// other moment. There is deliberately no `/api/status` poll on page load — we
+// do not surface server standby on an idle page; the state we care about is "is
+// a screenshot being taken right now", and that is already in the store. The
+// badge's text is static markup (it always reads "Capturing…" when visible), so
+// the client only toggles its visibility.
 
 import { $, on, setData, setHidden, setText } from "../dom.ts";
-import { fetchStatus } from "../api.ts";
-import { t } from "../i18n.ts";
+import { getLang, t } from "../i18n.ts";
 import type { AppState, Store } from "../store.ts";
 import type { Actions } from "../actions.ts";
 import { validateUrlShape } from "./urlInput.ts";
 
-/** server status -> i18n key; unknown statuses render the raw value. */
-const STATUS_KEYS: Record<string, string> = {
-  ready: "statusReady",
-  starting: "statusStarting",
-  degraded: "statusDegraded",
-  unreachable: "statusUnreachable",
-  checking: "statusChecking",
-};
-
 export function mountStatusBanner(root: ParentNode, store: Store, actions: Actions): void {
   const banner = $("status-banner", root);
-  const text = $("status-text", root);
   const captureBtn = $<HTMLButtonElement>("capture-btn", root);
-
-  const setBannerState = (key: string) => {
-    const lang = store.getState().lang;
-    setData(banner, "status", key);
-    setText(text, t(lang, STATUS_KEYS[key] ?? key));
-    setHidden(banner, false);
-  };
 
   const render = (state: AppState) => {
     // `data-state` before `disabled`: an e2e wait keyed on the attribute should
@@ -55,18 +41,16 @@ export function mountStatusBanner(root: ParentNode, store: Store, actions: Actio
     const busy = state.status === "loading";
     captureBtn.disabled = busy || !urlOk;
     captureBtn.setAttribute("aria-busy", busy ? "true" : "false");
-    setText(captureBtn, t(state.lang, busy ? "capturing" : "capture"));
+    setText(captureBtn, t(getLang(), busy ? "capturing" : "capture"));
+
+    // The badge exists to answer "capturing now?" — show it exactly while it is.
+    // `status-text` is static per-route markup, so only visibility changes here.
+    setData(banner, "status", busy ? "capturing" : "idle");
+    setHidden(banner, !busy);
   };
 
   on(captureBtn, "click", () => void actions.capture());
 
   store.subscribe(render);
   render(store.getState());
-
-  setBannerState("checking");
-  // One poll on load (planner 4.2). Readiness is informational here, so there is
-  // no retry loop to leak across a test run.
-  void fetchStatus()
-    .then((status) => setBannerState(status.status))
-    .catch(() => setBannerState("unreachable"));
 }

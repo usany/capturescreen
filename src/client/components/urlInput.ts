@@ -18,7 +18,7 @@
 // keystroke.
 
 import { $, debounce, on, setHidden, setText } from "../dom.ts";
-import { type Lang, t } from "../i18n.ts";
+import { getLang, type Lang, t } from "../i18n.ts";
 import type { Store } from "../store.ts";
 import type { Actions } from "../actions.ts";
 
@@ -46,7 +46,7 @@ const IPV4 = /^\d{1,3}(\.\d{1,3}){3}$/;
  * single "e" produces `https://e` — a URL the parser happily accepts — and the
  * button would flicker enabled on the first keystroke of every session.
  */
-export function validateUrlShape(raw: string, lang: Lang = "en"): UrlCheck {
+export function validateUrlShape(raw: string, lang: Lang = getLang()): UrlCheck {
   const trimmed = (raw ?? "").trim();
   if (!trimmed) return { valid: false, reason: t(lang, "invalidUrl") };
 
@@ -78,14 +78,13 @@ export function mountUrlInput(root: ParentNode, store: Store, actions: Actions):
 
   const commit = () => {
     const value = input.value;
-    const lang = store.getState().lang;
-    const check = validateUrlShape(value, lang);
+    const check = validateUrlShape(value);
     store.setState({ url: value });
 
     // An untouched field is not an error state — only complain once the user has
     // typed something that cannot work.
     const showError = value.trim().length > 0 && !check.valid;
-    setText(errorEl, check.reason ?? t(lang, "invalidUrl"));
+    setText(errorEl, check.reason ?? t(getLang(), "invalidUrl"));
     setHidden(errorEl, !showError);
   };
 
@@ -134,14 +133,6 @@ export function mountUrlInput(root: ParentNode, store: Store, actions: Actions):
       input.value = state.url;
     }
     if (autoToggle.checked !== state.autoCapture) autoToggle.checked = state.autoCapture;
-
-    // Reflect a language change onto an error that is already on screen, even
-    // though no keystroke ran (which is what normally refreshes it).
-    const val = input.value;
-    const check = validateUrlShape(val, state.lang);
-    const showError = val.trim().length > 0 && !check.valid;
-    setText(errorEl, check.reason ?? t(state.lang, "invalidUrl"));
-    setHidden(errorEl, !showError);
   });
 
   input.value = store.getState().url;

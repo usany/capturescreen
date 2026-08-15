@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <!--
-  public/index.html
-  Author: client-side-writer
-  Created: 2026-07-26
+  src/views/page.html
+  Author: agent
+  Created: 2026-08-16
 
-  The only page. Static markup with Tailwind classes and no inline script — all
-  behaviour is bundled into /js/app.js from src/client/main.ts.
+  The SINGLE page template for both languages. Raw markup with Tailwind classes
+  and no inline script — behaviour is bundled into /js/app.js from
+  src/client/main.ts.
+
+  Every user-visible string is a `{{key}}` placeholder resolved server-side by
+  src/lib/page.ts from the shared dictionary in src/lib/i18n.ts. There is
+  exactly ONE markup source and ONE text source for both `/en/` and `/ko/`;
+  the language switch is a plain `<a>` whose href is also dictionary-driven.
 
   Every `data-testid` here is a contract with tests/helpers/constants.ts
-  (TESTIDS) and planner 4.2. Restyle freely; do not rename a testid.
+  (TESTIDS). Restyle freely; do not rename a testid.
 -->
-<html lang="en">
+<html lang="{{lang}}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>URL Screenshot</title>
+    <title>{{title}}</title>
     <link rel="stylesheet" href="/styles/tailwind.css" />
     <link rel="icon" href="data:," />
   </head>
@@ -23,45 +29,47 @@
     <div data-testid="app-shell" class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
       <header class="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 class="text-2xl font-semibold tracking-tight" data-i18n="title">URL Screenshot</h1>
-          <p class="mt-1 text-sm text-slate-500" data-i18n="subtitle">
-            Capture any page at any viewport size, then download it as PNG or JPEG.
-          </p>
+          <h1 class="text-2xl font-semibold tracking-tight">{{title}}</h1>
+          <p class="mt-1 text-sm text-slate-500">{{subtitle}}</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-3">
+          <!-- Shown only while a capture is in flight (see statusBanner.ts).
+               `status-text` is static: when visible it reads the capture label. -->
           <div
             data-testid="status-banner"
             role="status"
             aria-live="polite"
+            hidden
             class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium"
           >
             <span class="status-dot" aria-hidden="true"></span>
-            <span data-testid="status-text">Checking…</span>
+            <span data-testid="status-text">{{capturing}}</span>
           </div>
 
-          <button
+          <!-- Cross-language link. href and label are direction-dependent, so
+               they come from the dictionary per rendered language. -->
+          <a
             data-testid="lang-btn"
-            type="button"
-            aria-label="Switch language"
+            href="{{langBtnHref}}"
+            aria-label="{{langBtnAria}}"
+            lang="{{langBtnLang}}"
             class="shrink-0 rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-600 shadow-sm transition-colors hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-300"
           >
-            한국어
-          </button>
+            {{langBtnText}}
+          </a>
         </div>
       </header>
 
-      <!-- ── Controls ────────────────────────────────────────────────────── -->
+      <!-- ── Controls ─────────────────────────────────────────────────────── -->
       <section
         data-testid="control-panel"
-        aria-label="Capture settings"
-        data-i18n="captureSettings"
-        data-i18n-attr="aria-label"
+        aria-label="{{captureSettings}}"
         class="flex flex-col gap-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
       >
         <!-- URL -->
         <div class="flex flex-col gap-2">
-          <label for="url-input" class="text-sm font-medium text-slate-700" data-i18n="pageUrl">Page URL</label>
+          <label for="url-input" class="text-sm font-medium text-slate-700">{{pageUrl}}</label>
           <div class="flex flex-col gap-2 sm:flex-row">
             <input
               id="url-input"
@@ -70,9 +78,7 @@
               inputmode="url"
               autocomplete="url"
               spellcheck="false"
-              placeholder="https://example.com"
-              data-i18n="placeholder"
-              data-i18n-attr="placeholder"
+              placeholder="{{placeholder}}"
               aria-describedby="url-error"
               class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
             />
@@ -82,10 +88,11 @@
               data-state="idle"
               class="shrink-0 rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
             >
-              Capture
+              {{capture}}
             </button>
           </div>
 
+          <!-- Runtime-managed by urlInput.ts; this is the no-JS baseline. -->
           <p
             id="url-error"
             data-testid="url-error"
@@ -93,7 +100,7 @@
             hidden
             class="text-sm font-medium text-red-600"
           >
-            Enter a valid http(s) URL
+            {{invalidUrl}}
           </p>
 
           <label class="mt-1 inline-flex w-fit items-center gap-2 text-sm text-slate-600">
@@ -102,7 +109,7 @@
               type="checkbox"
               class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300"
             />
-            <span data-i18n="autoCapture">Auto-capture when I stop typing</span>
+            <span>{{autoCapture}}</span>
           </label>
         </div>
 
@@ -112,7 +119,7 @@
         <div class="flex flex-col gap-2">
           <div class="flex flex-wrap items-end gap-4">
             <div class="flex flex-col gap-1">
-              <label for="width-input" class="text-sm font-medium text-slate-700" data-i18n="width">Width</label>
+              <label for="width-input" class="text-sm font-medium text-slate-700">{{width}}</label>
               <input
                 id="width-input"
                 data-testid="width-input"
@@ -128,7 +135,8 @@
             <span class="pb-2.5 text-slate-400" aria-hidden="true">×</span>
 
             <div class="flex flex-col gap-1">
-              <label for="height-input" class="text-sm font-medium text-slate-700" data-i18n="height">Height</label>
+              <label for="height-input" class="text-sm font-medium text-slate-700"
+              >{{height}}</label>
               <input
                 id="height-input"
                 data-testid="height-input"
@@ -144,22 +152,22 @@
             <button
               data-testid="reset-size-btn"
               type="button"
-              title="Reset to this screen's size"
-              data-i18n="resetSize"
-              data-i18n-title="resetSizeTitle"
+              title="{{resetSizeTitle}}"
               class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
             >
-              Reset to screen size
+              {{resetSize}}
             </button>
           </div>
 
+          <!-- Runtime-managed by sizeControls.ts; the no-JS default is empty. -->
           <p
             id="dimension-error"
             data-testid="dimension-error"
             role="alert"
             hidden
             class="text-sm font-medium text-red-600"
-          ></p>
+          >
+          </p>
         </div>
 
         <hr class="border-slate-100" />
@@ -167,7 +175,7 @@
         <!-- Output -->
         <div class="flex flex-wrap items-center gap-6">
           <div class="flex flex-col gap-1">
-            <label for="format-select" class="text-sm font-medium text-slate-700" data-i18n="format">Format</label>
+            <label for="format-select" class="text-sm font-medium text-slate-700">{{format}}</label>
             <select
               id="format-select"
               data-testid="format-select"
@@ -180,8 +188,9 @@
 
           <!-- Hidden for PNG: quality is a JPEG-only setting. -->
           <div data-testid="quality-row" hidden class="flex flex-col gap-1">
-            <label for="quality-slider" class="text-sm font-medium text-slate-700" data-i18n="quality">
-              Quality <span data-testid="quality-value" class="tabular-nums text-slate-500">90</span>
+            <label for="quality-slider" class="text-sm font-medium text-slate-700">
+              {{quality}} <span data-testid="quality-value" class="tabular-nums text-slate-500"
+              >90</span>
             </label>
             <input
               id="quality-slider"
@@ -201,24 +210,22 @@
               type="checkbox"
               class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300"
             />
-            <span data-i18n="fullPage">Full page</span>
+            <span>{{fullPage}}</span>
           </label>
         </div>
       </section>
 
-      <!-- ── Preview ─────────────────────────────────────────────────────── -->
+      <!-- ── Preview ──────────────────────────────────────────────────────── -->
       <section
         data-testid="preview-pane"
-        aria-label="Screenshot preview"
-        data-i18n="screenshotPreview"
-        data-i18n-attr="aria-label"
+        aria-label="{{screenshotPreview}}"
         class="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
       >
         <div
           class="preview-checkerboard flex min-h-64 items-center justify-center overflow-auto rounded-lg border border-dashed border-slate-200 p-3"
         >
-          <div data-testid="preview-empty" class="text-center text-sm text-slate-400" data-i18n="previewEmpty">
-            Preview will appear here
+          <div data-testid="preview-empty" class="text-center text-sm text-slate-400">
+            {{previewEmpty}}
           </div>
 
           <div
@@ -228,7 +235,7 @@
             class="flex flex-col items-center gap-3 text-sm text-slate-500"
           >
             <span class="spinner-ring block h-9 w-9" aria-hidden="true"></span>
-            <span data-i18n="capturing">Capturing…</span>
+            <span>{{capturing}}</span>
           </div>
 
           <!-- max-w-full h-auto: a 1980-wide capture scales down to fit while
@@ -240,18 +247,20 @@
             class="h-auto max-w-full rounded shadow-sm"
           />
 
+          <!-- Runtime-managed by previewPane.ts. -->
           <div
             data-testid="preview-error"
             role="alert"
             hidden
             class="max-w-lg rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-700"
-          ></div>
+          >
+          </div>
         </div>
 
         <p data-testid="preview-meta" hidden class="text-sm tabular-nums text-slate-500"></p>
       </section>
 
-      <!-- ── Download ────────────────────────────────────────────────────── -->
+      <!-- ── Download ─────────────────────────────────────────────────────── -->
       <!-- Hidden until a capture succeeds. download-btn is a native <a download>
            so the browser fires a real download event (planner A3). -->
       <div
@@ -262,25 +271,22 @@
         <a
           data-testid="download-btn"
           class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300"
-          data-i18n="download"
         >
-          Download
+          {{download}}
         </a>
         <button
           data-testid="download-png-btn"
           type="button"
           class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
-          data-i18n="downloadPng"
         >
-          Download as PNG
+          {{downloadPng}}
         </button>
         <button
           data-testid="download-jpeg-btn"
           type="button"
           class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
-          data-i18n="downloadJpeg"
         >
-          Download as JPEG
+          {{downloadJpeg}}
         </button>
       </div>
     </div>

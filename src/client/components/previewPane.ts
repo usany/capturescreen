@@ -16,7 +16,7 @@
 // from; it should be a stable node.
 
 import { $, formatKb, formatSeconds, setHidden, setText } from "../dom.ts";
-import { t } from "../i18n.ts";
+import { getLang, t } from "../i18n.ts";
 import type { AppState, Store } from "../store.ts";
 import type { ScreenshotData } from "../../types/api.ts";
 
@@ -58,7 +58,7 @@ export function mountPreviewPane(root: ParentNode, store: Store): void {
       // Guarded: reassigning an identical `src` restarts the decode and makes
       // `naturalWidth` momentarily 0.
       if (src && image.getAttribute("src") !== src) image.src = src;
-      image.alt = t(state.lang, "screenshotOf", { url: result.url });
+      image.alt = t(getLang(), "screenshotOf", { url: result.url });
       setText(meta, formatMeta(result));
     } else {
       // Drop the bitmap so a failed re-capture cannot leave the previous
