@@ -22,6 +22,7 @@ import { mountFormatSelector } from "./components/formatSelector.ts";
 import { mountPreviewPane } from "./components/previewPane.ts";
 import { mountDownloadBar } from "./components/downloadBar.ts";
 import { mountStatusBanner } from "./components/statusBanner.ts";
+import { mountThemeToggle } from "./components/themeToggle.ts";
 
 function initialState(): AppState {
   // Screen size, or a remembered size from a previous visit. See sizeControls
@@ -49,6 +50,9 @@ function start(): void {
   // Status banner first: it owns `capture-btn`, and mounting it before the URL
   // field means the button is already in its correct disabled state by the time
   // the first keystroke can arrive.
+  // Theme first: applying the `dark` class pre-paint avoids a flash of the
+  // wrong theme before the rest of the controls mount.
+  mountThemeToggle(document);
   mountStatusBanner(document, store, actions);
   mountUrlInput(document, store, actions);
   mountSizeControls(document, store);

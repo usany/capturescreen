@@ -13,6 +13,11 @@
   exactly ONE markup source and ONE text source for both `/en/` and `/ko/`;
   the language switch is a plain `<a>` whose href is also dictionary-driven.
 
+  Colours ship with paired `dark:` variants (activation source: the `dark` class
+  on <html>, toggled by `theme-btn` — see src/styles/tailwind.input.css). The
+  `theme-btn` label itself is a placeholder here because it flips at runtime:
+  themeToggle.ts rewrites it to the target theme.
+
   Every `data-testid` here is a contract with tests/helpers/constants.ts
   (TESTIDS). Restyle freely; do not rename a testid.
 -->
@@ -25,12 +30,15 @@
     <link rel="icon" href="data:," />
   </head>
 
-  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
-    <div data-testid="app-shell" class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
+  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+    <div
+      data-testid="app-shell"
+      class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6"
+    >
       <header class="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 class="text-2xl font-semibold tracking-tight">{{title}}</h1>
-          <p class="mt-1 text-sm text-slate-500">{{subtitle}}</p>
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{subtitle}}</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-3">
@@ -47,6 +55,17 @@
             <span data-testid="status-text">{{capturing}}</span>
           </div>
 
+          <!-- Light/dark theme toggle. Label is the TARGET theme and is rewritten
+               at runtime by themeToggle.ts; this placeholder is just no-JS text. -->
+          <button
+            data-testid="theme-btn"
+            type="button"
+            aria-label="{{themeAria}}"
+            class="shrink-0 rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-600 shadow-sm hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-100 dark:focus:ring-slate-600"
+          >
+            {{themeDark}}
+          </button>
+
           <!-- Cross-language link. href and label are direction-dependent, so
                they come from the dictionary per rendered language. -->
           <a
@@ -54,7 +73,7 @@
             href="{{langBtnHref}}"
             aria-label="{{langBtnAria}}"
             lang="{{langBtnLang}}"
-            class="shrink-0 rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-600 shadow-sm transition-colors hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-300"
+            class="shrink-0 rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-600 shadow-sm hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-100 dark:focus:ring-slate-600"
           >
             {{langBtnText}}
           </a>
@@ -65,11 +84,11 @@
       <section
         data-testid="control-panel"
         aria-label="{{captureSettings}}"
-        class="flex flex-col gap-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+        class="flex flex-col gap-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
       >
         <!-- URL -->
         <div class="flex flex-col gap-2">
-          <label for="url-input" class="text-sm font-medium text-slate-700">{{pageUrl}}</label>
+          <label for="url-input" class="text-sm font-medium text-slate-700 dark:text-slate-200">{{pageUrl}}</label>
           <div class="flex flex-col gap-2 sm:flex-row">
             <input
               id="url-input"
@@ -80,13 +99,13 @@
               spellcheck="false"
               placeholder="{{placeholder}}"
               aria-describedby="url-error"
-              class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-blue-500 dark:focus:ring-blue-800"
             />
             <button
               data-testid="capture-btn"
               type="button"
               data-state="idle"
-              class="shrink-0 rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
+              class="shrink-0 rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 dark:disabled:bg-slate-700 dark:disabled:text-slate-500"
             >
               {{capture}}
             </button>
@@ -98,28 +117,28 @@
             data-testid="url-error"
             role="alert"
             hidden
-            class="text-sm font-medium text-red-600"
+            class="text-sm font-medium text-red-600 dark:text-red-400"
           >
             {{invalidUrl}}
           </p>
 
-          <label class="mt-1 inline-flex w-fit items-center gap-2 text-sm text-slate-600">
+          <label class="mt-1 inline-flex w-fit items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
             <input
               data-testid="auto-capture-toggle"
               type="checkbox"
-              class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300"
+              class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300 dark:border-slate-600 dark:bg-slate-800"
             />
             <span>{{autoCapture}}</span>
           </label>
         </div>
 
-        <hr class="border-slate-100" />
+        <hr class="border-slate-100 dark:border-slate-800" />
 
         <!-- Size -->
         <div class="flex flex-col gap-2">
           <div class="flex flex-wrap items-end gap-4">
             <div class="flex flex-col gap-1">
-              <label for="width-input" class="text-sm font-medium text-slate-700">{{width}}</label>
+              <label for="width-input" class="text-sm font-medium text-slate-700 dark:text-slate-200">{{width}}</label>
               <input
                 id="width-input"
                 data-testid="width-input"
@@ -128,14 +147,14 @@
                 max="5000"
                 step="1"
                 aria-describedby="dimension-error"
-                class="w-32 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                class="w-32 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-blue-500 dark:focus:ring-blue-800"
               />
             </div>
 
-            <span class="pb-2.5 text-slate-400" aria-hidden="true">×</span>
+            <span class="pb-2.5 text-slate-400 dark:text-slate-500" aria-hidden="true">×</span>
 
             <div class="flex flex-col gap-1">
-              <label for="height-input" class="text-sm font-medium text-slate-700"
+              <label for="height-input" class="text-sm font-medium text-slate-700 dark:text-slate-200"
               >{{height}}</label>
               <input
                 id="height-input"
@@ -145,7 +164,7 @@
                 max="20000"
                 step="1"
                 aria-describedby="dimension-error"
-                class="w-32 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                class="w-32 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-blue-500 dark:focus:ring-blue-800"
               />
             </div>
 
@@ -153,7 +172,7 @@
               data-testid="reset-size-btn"
               type="button"
               title="{{resetSizeTitle}}"
-              class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
+              class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:focus:ring-slate-600"
             >
               {{resetSize}}
             </button>
@@ -165,21 +184,21 @@
             data-testid="dimension-error"
             role="alert"
             hidden
-            class="text-sm font-medium text-red-600"
+            class="text-sm font-medium text-red-600 dark:text-red-400"
           >
           </p>
         </div>
 
-        <hr class="border-slate-100" />
+        <hr class="border-slate-100 dark:border-slate-800" />
 
         <!-- Output -->
         <div class="flex flex-wrap items-center gap-6">
           <div class="flex flex-col gap-1">
-            <label for="format-select" class="text-sm font-medium text-slate-700">{{format}}</label>
+            <label for="format-select" class="text-sm font-medium text-slate-700 dark:text-slate-200">{{format}}</label>
             <select
               id="format-select"
               data-testid="format-select"
-              class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-blue-500 dark:focus:ring-blue-800"
             >
               <option value="png">PNG</option>
               <option value="jpeg">JPEG</option>
@@ -188,8 +207,8 @@
 
           <!-- Hidden for PNG: quality is a JPEG-only setting. -->
           <div data-testid="quality-row" hidden class="flex flex-col gap-1">
-            <label for="quality-slider" class="text-sm font-medium text-slate-700">
-              {{quality}} <span data-testid="quality-value" class="tabular-nums text-slate-500"
+            <label for="quality-slider" class="text-sm font-medium text-slate-700 dark:text-slate-200">
+              {{quality}} <span data-testid="quality-value" class="tabular-nums text-slate-500 dark:text-slate-400"
               >90</span>
             </label>
             <input
@@ -204,11 +223,11 @@
             />
           </div>
 
-          <label class="inline-flex items-center gap-2 self-end pb-2 text-sm text-slate-600">
+          <label class="inline-flex items-center gap-2 self-end pb-2 text-sm text-slate-600 dark:text-slate-300">
             <input
               data-testid="fullpage-toggle"
               type="checkbox"
-              class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300"
+              class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300 dark:border-slate-600 dark:bg-slate-800"
             />
             <span>{{fullPage}}</span>
           </label>
@@ -219,12 +238,12 @@
       <section
         data-testid="preview-pane"
         aria-label="{{screenshotPreview}}"
-        class="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+        class="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
       >
         <div
-          class="preview-checkerboard flex min-h-64 items-center justify-center overflow-auto rounded-lg border border-dashed border-slate-200 p-3"
+          class="preview-checkerboard flex min-h-64 items-center justify-center overflow-auto rounded-lg border border-dashed border-slate-200 p-3 dark:border-slate-700"
         >
-          <div data-testid="preview-empty" class="text-center text-sm text-slate-400">
+          <div data-testid="preview-empty" class="text-center text-sm text-slate-400 dark:text-slate-500">
             {{previewEmpty}}
           </div>
 
@@ -232,7 +251,7 @@
             data-testid="loading-spinner"
             role="status"
             hidden
-            class="flex flex-col items-center gap-3 text-sm text-slate-500"
+            class="flex flex-col items-center gap-3 text-sm text-slate-500 dark:text-slate-400"
           >
             <span class="spinner-ring block h-9 w-9" aria-hidden="true"></span>
             <span>{{capturing}}</span>
@@ -252,12 +271,12 @@
             data-testid="preview-error"
             role="alert"
             hidden
-            class="max-w-lg rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-700"
+            class="max-w-lg rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-400"
           >
           </div>
         </div>
 
-        <p data-testid="preview-meta" hidden class="text-sm tabular-nums text-slate-500"></p>
+        <p data-testid="preview-meta" hidden class="text-sm tabular-nums text-slate-500 dark:text-slate-400"></p>
       </section>
 
       <!-- ── Download ─────────────────────────────────────────────────────── -->
@@ -266,25 +285,25 @@
       <div
         data-testid="download-bar"
         hidden
-        class="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+        class="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900"
       >
         <a
           data-testid="download-btn"
-          class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300"
+          class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 dark:focus:ring-slate-500"
         >
           {{download}}
         </a>
         <button
           data-testid="download-png-btn"
           type="button"
-          class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
+          class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:focus:ring-slate-600"
         >
           {{downloadPng}}
         </button>
         <button
           data-testid="download-jpeg-btn"
           type="button"
-          class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
+          class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:focus:ring-slate-600"
         >
           {{downloadJpeg}}
         </button>

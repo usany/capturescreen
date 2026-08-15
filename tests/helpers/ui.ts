@@ -63,6 +63,7 @@ export function ui(page: Page) {
     statusBanner: byId(TESTIDS.statusBanner),
     statusText: byId(TESTIDS.statusText),
     captureBtn: byId(TESTIDS.captureBtn),
+    themeBtn: byId(TESTIDS.themeBtn),
   };
 }
 

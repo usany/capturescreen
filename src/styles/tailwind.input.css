@@ -11,6 +11,15 @@
 @import "tailwindcss";
 
 /*
+  Class-based (not OS-media) dark mode. The `theme-btn` toggle applies/removes
+  a `dark` class on <html>, and this variant makes every `dark:` utility active
+  inside it. Explicit tie-in to <html> keeps the page light until the client
+  runs, and makes the toggle the single source of truth (first-timers still
+  fall back to prefers-color-scheme in themeToggle.ts).
+*/
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
   Explicit sources. Tailwind v4 auto-detects, but this input file lives in
   src/styles/ while the only markup lives in public/ — spelling both out means a
   class cannot silently fail to be generated because detection walked the wrong

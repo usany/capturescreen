@@ -52,6 +52,11 @@ const EN: Dict = {
   downloadPng: "Download as PNG",
   downloadJpeg: "Download as JPEG",
 
+  // theme toggle
+  themeDark: "Dark",
+  themeLight: "Light",
+  themeAria: "Toggle dark mode",
+
   // cross-language link (direction-dependent per rendered language)
   langBtnText: "한국어",
   langBtnHref: "/ko/",
@@ -87,6 +92,10 @@ const KO: Dict = {
   download: "다운로드",
   downloadPng: "PNG로 다운로드",
   downloadJpeg: "JPEG로 다운로드",
+
+  themeDark: "다크",
+  themeLight: "라이트",
+  themeAria: "다크 모드 전환",
 
   langBtnText: "English",
   langBtnHref: "/en/",

@@ -19,6 +19,7 @@ interface BrowserGlobals {
   innerWidth?: number;
   innerHeight?: number;
   localStorage?: Storage;
+  matchMedia?: (query: string) => { matches: boolean };
   setTimeout: (fn: () => void, ms: number) => number;
   clearTimeout: (id: number) => void;
 }
