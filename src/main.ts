@@ -44,6 +44,8 @@ async function shutdown(signal: string): Promise<void> {
 }
 
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
+  // Windows only supports SIGINT, SIGBREAK and SIGQUIT — SIGTERM throws.
+  if ((Deno.build.os === "windows") && signal === "SIGTERM") continue;
   Deno.addSignalListener(signal, () => {
     void shutdown(signal);
   });
