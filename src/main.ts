@@ -10,11 +10,10 @@
 // `deno task test` starts on a loaded machine and trips the timing assertions.
 
 import { createApp } from "./app.ts";
-import { getPort } from "./config.ts";
 import { errorFields, log } from "./lib/logger.ts";
 import { closeBrowser } from "./services/browser.service.ts";
 
-const port = getPort();
+const port = 8000;
 const app = createApp();
 
 const server = app.listen(port, () => {

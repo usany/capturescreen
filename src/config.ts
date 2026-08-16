@@ -80,13 +80,6 @@ function env(name: string): string | undefined {
   }
 }
 
-/** HTTP port. `PORT` env, else 3000. */
-export function getPort(): number {
-  const raw = env("PORT");
-  const port = Number(raw);
-  return Number.isInteger(port) && port > 0 && port < 65_536 ? port : 3000;
-}
-
 /**
  * Whether private / loopback targets may be captured.
  *
