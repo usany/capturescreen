@@ -11,6 +11,20 @@
 @import "tailwindcss";
 
 /*
+  Class-based dark mode (driven by the theme toggle, not the OS preference).
+  Tailwind v4's default `dark:` variant keys off `prefers-color-scheme`; this
+  re-defines it to match an explicit `.dark` class on <html> (applied by
+  src/client/components/themeToggle.ts). `:where(.dark, .dark *)` scopes it so
+  the whole subtree inherits the variant without nesting every utility.
+*/
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Make native form controls (checkbox, select) honour the dark scheme too. */
+html.dark {
+  color-scheme: dark;
+}
+
+/*
   Explicit sources. Tailwind v4 auto-detects, but this input file lives in
   src/styles/ while the only markup lives in public/ — spelling both out means a
   class cannot silently fail to be generated because detection walked the wrong
@@ -54,6 +68,25 @@
   color: #991b1b;
 }
 
+/* Same status palette in dark, scoped higher so it beats the light rules above. */
+.dark [data-testid="status-banner"] {
+  background-color: #1e293b;
+  color: #94a3b8;
+}
+.dark [data-testid="status-banner"][data-status="ready"] {
+  background-color: #14532d;
+  color: #bbf7d0;
+}
+.dark [data-testid="status-banner"][data-status="starting"] {
+  background-color: #422006;
+  color: #fde68a;
+}
+.dark [data-testid="status-banner"][data-status="degraded"],
+.dark [data-testid="status-banner"][data-status="unreachable"] {
+  background-color: #450a0a;
+  color: #fecaca;
+}
+
 /* A dot before the label, sized from the current text colour. */
 @utility status-dot {
   display: inline-block;
@@ -72,6 +105,11 @@
   animation: spinner-spin 0.7s linear infinite;
 }
 
+.dark .spinner-ring {
+  border-color: #334155;
+  border-top-color: #3b82f6;
+}
+
 @keyframes spinner-spin {
   to {
     transform: rotate(360deg);
@@ -88,6 +126,14 @@
     linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
   background-size: 16px 16px;
   background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+
+.dark .preview-checkerboard {
+  background-color: #0f172a;
+  background-image: linear-gradient(45deg, #1e293b 25%, transparent 25%),
+    linear-gradient(-45deg, #1e293b 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #1e293b 75%),
+    linear-gradient(-45deg, transparent 75%, #1e293b 75%);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -19,24 +19,74 @@
     <link rel="icon" href="data:," />
   </head>
 
-  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+  <body
+    class="min-h-screen bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100"
+  >
     <div data-testid="app-shell" class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
       <header class="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 class="text-2xl font-semibold tracking-tight">URL Screenshot</h1>
-          <p class="mt-1 text-sm text-slate-500">
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
             Capture any page at any viewport size, then download it as PNG or JPEG.
           </p>
         </div>
 
-        <div
-          data-testid="status-banner"
-          role="status"
-          aria-live="polite"
-          class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium"
-        >
-          <span class="status-dot" aria-hidden="true"></span>
-          <span data-testid="status-text">Checking…</span>
+        <div class="flex items-center gap-3">
+          <div
+            data-testid="status-banner"
+            role="status"
+            aria-live="polite"
+            class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium"
+          >
+            <span class="status-dot" aria-hidden="true"></span>
+            <span data-testid="status-text">Checking…</span>
+          </div>
+
+          <!-- Light/dark toggle: icon + label show what a click will switch TO
+               (cf. src/client/components/themeToggle.ts). Sun = switch to light,
+               moon = switch to dark. -->
+          <button
+            data-testid="theme-toggle"
+            type="button"
+            role="switch"
+            aria-pressed="false"
+            aria-label="Switch to dark mode"
+            title="Switch to dark mode"
+            class="inline-flex shrink-0 items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:focus:ring-slate-600"
+          >
+            <svg
+              data-testid="theme-icon-sun"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-4 w-4"
+              aria-hidden="true"
+              hidden
+            >
+              <circle cx="12" cy="12" r="4"></circle>
+              <path
+                d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+              >
+              </path>
+            </svg>
+            <svg
+              data-testid="theme-icon-moon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-4 w-4"
+              aria-hidden="true"
+            >
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+            </svg>
+            <span data-testid="theme-label">Dark mode</span>
+          </button>
         </div>
       </header>
 
@@ -44,11 +94,12 @@
       <section
         data-testid="control-panel"
         aria-label="Capture settings"
-        class="flex flex-col gap-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+        class="flex flex-col gap-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-none"
       >
         <!-- URL -->
         <div class="flex flex-col gap-2">
-          <label for="url-input" class="text-sm font-medium text-slate-700">Page URL</label>
+          <label for="url-input" class="text-sm font-medium text-slate-700 dark:text-slate-300"
+          >Page URL</label>
           <div class="flex flex-col gap-2 sm:flex-row">
             <input
               id="url-input"
@@ -59,13 +110,13 @@
               spellcheck="false"
               placeholder="https://example.com"
               aria-describedby="url-error"
-              class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-blue-400 dark:focus:ring-blue-900/60"
             />
             <button
               data-testid="capture-btn"
               type="button"
               data-state="idle"
-              class="shrink-0 rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
+              class="shrink-0 rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 dark:hover:bg-blue-500 dark:focus:ring-blue-800 dark:disabled:bg-slate-700 dark:disabled:text-slate-400"
             >
               Capture
             </button>
@@ -76,28 +127,33 @@
             data-testid="url-error"
             role="alert"
             hidden
-            class="text-sm font-medium text-red-600"
+            class="text-sm font-medium text-red-600 dark:text-red-400"
           >
             Enter a valid http(s) URL
           </p>
 
-          <label class="mt-1 inline-flex w-fit items-center gap-2 text-sm text-slate-600">
+          <label
+            class="mt-1 inline-flex w-fit items-center gap-2 text-sm text-slate-600 dark:text-slate-400"
+          >
             <input
               data-testid="auto-capture-toggle"
               type="checkbox"
-              class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300"
+              class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300 dark:border-slate-600 dark:bg-slate-800 dark:text-blue-500 dark:focus:ring-blue-900"
             />
             <span>Auto-capture when I stop typing</span>
           </label>
         </div>
 
-        <hr class="border-slate-100" />
+        <hr class="border-slate-100 dark:border-slate-800" />
 
         <!-- Size -->
         <div class="flex flex-col gap-2">
           <div class="flex flex-wrap items-end gap-4">
             <div class="flex flex-col gap-1">
-              <label for="width-input" class="text-sm font-medium text-slate-700">Width</label>
+              <label
+                for="width-input"
+                class="text-sm font-medium text-slate-700 dark:text-slate-300"
+              >Width</label>
               <input
                 id="width-input"
                 data-testid="width-input"
@@ -106,14 +162,17 @@
                 max="5000"
                 step="1"
                 aria-describedby="dimension-error"
-                class="w-32 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                class="w-32 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-blue-900/60"
               />
             </div>
 
-            <span class="pb-2.5 text-slate-400" aria-hidden="true">×</span>
+            <span class="pb-2.5 text-slate-400 dark:text-slate-500" aria-hidden="true">×</span>
 
             <div class="flex flex-col gap-1">
-              <label for="height-input" class="text-sm font-medium text-slate-700">Height</label>
+              <label
+                for="height-input"
+                class="text-sm font-medium text-slate-700 dark:text-slate-300"
+              >Height</label>
               <input
                 id="height-input"
                 data-testid="height-input"
@@ -122,7 +181,7 @@
                 max="20000"
                 step="1"
                 aria-describedby="dimension-error"
-                class="w-32 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                class="w-32 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-blue-900/60"
               />
             </div>
 
@@ -130,7 +189,7 @@
               data-testid="reset-size-btn"
               type="button"
               title="Reset to this screen's size"
-              class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
+              class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:focus:ring-slate-600"
             >
               Reset to screen size
             </button>
@@ -141,20 +200,24 @@
             data-testid="dimension-error"
             role="alert"
             hidden
-            class="text-sm font-medium text-red-600"
-          ></p>
+            class="text-sm font-medium text-red-600 dark:text-red-400"
+          >
+          </p>
         </div>
 
-        <hr class="border-slate-100" />
+        <hr class="border-slate-100 dark:border-slate-800" />
 
         <!-- Output -->
         <div class="flex flex-wrap items-center gap-6">
           <div class="flex flex-col gap-1">
-            <label for="format-select" class="text-sm font-medium text-slate-700">Format</label>
+            <label
+              for="format-select"
+              class="text-sm font-medium text-slate-700 dark:text-slate-300"
+            >Format</label>
             <select
               id="format-select"
               data-testid="format-select"
-              class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-blue-900/60"
             >
               <option value="png">PNG</option>
               <option value="jpeg">JPEG</option>
@@ -163,8 +226,14 @@
 
           <!-- Hidden for PNG: quality is a JPEG-only setting. -->
           <div data-testid="quality-row" hidden class="flex flex-col gap-1">
-            <label for="quality-slider" class="text-sm font-medium text-slate-700">
-              Quality <span data-testid="quality-value" class="tabular-nums text-slate-500">90</span>
+            <label
+              for="quality-slider"
+              class="text-sm font-medium text-slate-700 dark:text-slate-300"
+            >
+              Quality <span
+                data-testid="quality-value"
+                class="tabular-nums text-slate-500 dark:text-slate-400"
+              >90</span>
             </label>
             <input
               id="quality-slider"
@@ -178,11 +247,13 @@
             />
           </div>
 
-          <label class="inline-flex items-center gap-2 self-end pb-2 text-sm text-slate-600">
+          <label
+            class="inline-flex items-center gap-2 self-end pb-2 text-sm text-slate-600 dark:text-slate-400"
+          >
             <input
               data-testid="fullpage-toggle"
               type="checkbox"
-              class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300"
+              class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300 dark:border-slate-600 dark:bg-slate-800 dark:text-blue-500 dark:focus:ring-blue-900"
             />
             <span>Full page</span>
           </label>
@@ -193,12 +264,15 @@
       <section
         data-testid="preview-pane"
         aria-label="Screenshot preview"
-        class="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+        class="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-none"
       >
         <div
-          class="preview-checkerboard flex min-h-64 items-center justify-center overflow-auto rounded-lg border border-dashed border-slate-200 p-3"
+          class="preview-checkerboard flex min-h-64 items-center justify-center overflow-auto rounded-lg border border-dashed border-slate-200 p-3 dark:border-slate-700"
         >
-          <div data-testid="preview-empty" class="text-center text-sm text-slate-400">
+          <div
+            data-testid="preview-empty"
+            class="text-center text-sm text-slate-400 dark:text-slate-500"
+          >
             Preview will appear here
           </div>
 
@@ -206,7 +280,7 @@
             data-testid="loading-spinner"
             role="status"
             hidden
-            class="flex flex-col items-center gap-3 text-sm text-slate-500"
+            class="flex flex-col items-center gap-3 text-sm text-slate-500 dark:text-slate-400"
           >
             <span class="spinner-ring block h-9 w-9" aria-hidden="true"></span>
             <span>Capturing…</span>
@@ -225,11 +299,17 @@
             data-testid="preview-error"
             role="alert"
             hidden
-            class="max-w-lg rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-700"
-          ></div>
+            class="max-w-lg rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300"
+          >
+          </div>
         </div>
 
-        <p data-testid="preview-meta" hidden class="text-sm tabular-nums text-slate-500"></p>
+        <p
+          data-testid="preview-meta"
+          hidden
+          class="text-sm tabular-nums text-slate-500 dark:text-slate-400"
+        >
+        </p>
       </section>
 
       <!-- ── Download ────────────────────────────────────────────────────── -->
@@ -238,25 +318,25 @@
       <div
         data-testid="download-bar"
         hidden
-        class="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+        class="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-none"
       >
         <a
           data-testid="download-btn"
-          class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300"
+          class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white dark:focus:ring-slate-500"
         >
           Download
         </a>
         <button
           data-testid="download-png-btn"
           type="button"
-          class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
+          class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:focus:ring-slate-600"
         >
           Download as PNG
         </button>
         <button
           data-testid="download-jpeg-btn"
           type="button"
-          class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200"
+          class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:focus:ring-slate-600"
         >
           Download as JPEG
         </button>

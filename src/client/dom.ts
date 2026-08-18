@@ -19,12 +19,17 @@ interface BrowserGlobals {
   innerWidth?: number;
   innerHeight?: number;
   localStorage?: Storage;
+  matchMedia?: Query;
   setTimeout: (fn: () => void, ms: number) => number;
   clearTimeout: (id: number) => void;
 }
 
 /** In a browser `globalThis === window`; using it avoids Deno's removed `window` global. */
 export const win = globalThis as unknown as BrowserGlobals;
+
+export interface Query {
+  matches: boolean;
+}
 
 /** Find the single element carrying `data-testid="<testid>"`. Throws when absent. */
 export function $<T extends Element = HTMLElement>(testid: string, root: ParentNode = document): T {

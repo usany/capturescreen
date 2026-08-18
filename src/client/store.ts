@@ -15,6 +15,9 @@ import type { ImageFormat, ScreenshotData } from "../types/api.ts";
 /** Lifecycle of the current capture. Mirrored onto `capture-btn[data-state]`. */
 export type CaptureStatus = "idle" | "loading" | "success" | "error";
 
+/** The page colour scheme. Mirrored onto `<html>` as the `dark` class. */
+export type Theme = "light" | "dark";
+
 export interface AppState {
   /** Raw text of `url-input`, updated on the 400 ms debounce (not per keystroke). */
   url: string;
@@ -26,6 +29,8 @@ export interface AppState {
   fullPage: boolean;
   /** Default OFF. When ON, a valid URL idle for 900 ms fires a capture. */
   autoCapture: boolean;
+  /** Remembered choice, else the OS preference; persisted under `urlshot:theme`. */
+  theme: Theme;
   status: CaptureStatus;
   result: ScreenshotData | null;
   error: { code: string; message: string } | null;

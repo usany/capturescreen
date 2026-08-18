@@ -16,6 +16,7 @@ import { createStore } from "./store.ts";
 import type { AppState } from "./store.ts";
 import { createActions } from "./actions.ts";
 import { getInitialSize } from "./components/sizeControls.ts";
+import { getInitialTheme, mountThemeToggle } from "./components/themeToggle.ts";
 import { mountUrlInput } from "./components/urlInput.ts";
 import { mountSizeControls } from "./components/sizeControls.ts";
 import { mountFormatSelector } from "./components/formatSelector.ts";
@@ -36,6 +37,8 @@ function initialState(): AppState {
     fullPage: false,
     // OFF by default: auto-capture means a chromium navigation per typing pause.
     autoCapture: false,
+    // Remembered choice, else the OS preference; persisted under `urlshot:theme`.
+    theme: getInitialTheme(),
     status: "idle",
     result: null,
     error: null,
@@ -50,6 +53,7 @@ function start(): void {
   // field means the button is already in its correct disabled state by the time
   // the first keystroke can arrive.
   mountStatusBanner(document, store, actions);
+  mountThemeToggle(document, store);
   mountUrlInput(document, store, actions);
   mountSizeControls(document, store);
   mountFormatSelector(document, store);
