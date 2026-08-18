@@ -35,7 +35,8 @@ Sixteen files, all ESModules TypeScript, all carrying a signature header comment
 |                | `src/lib/validators.ts`                  | `normalizeUrl()`, `validateDimension()`, `parseScreenshotRequest()`… |
 |                | `src/lib/filename.ts`                    | `buildFilename()`, `sanitizeFilename()`                              |
 |                | `src/lib/logger.ts`                      | JSON-lines `log.info/warn/error`                                     |
-|                | `src/lib/async.ts`                       | `asyncHandler()` — express 4 does not catch async rejections         |
+|                | _(removed)_ `src/lib/async.ts`           | deleted on upgrade to express 5 — rejected async handlers are caught   |
+|                |                                            | natively and passed to `next(err)` by the router                     |
 | **types**      | `src/types/server.ts`                    | server-only types (`NormalizedRequest`, `CaptureResult`, …)          |
 
 Middleware order in `createApp()` is the contract:

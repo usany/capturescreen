@@ -17,7 +17,6 @@
 import express, { type Request, type Response, type Router } from "express";
 import { Buffer } from "node:buffer";
 import { mimeTypeFor } from "../config.ts";
-import { asyncHandler } from "../lib/async.ts";
 import { AppError, ERROR_CODES } from "../lib/errors.ts";
 import { buildFilename, sanitizeFilename } from "../lib/filename.ts";
 import { validatedRequest, validateScreenshotRequest } from "../middleware/validate.middleware.ts";
@@ -54,14 +53,20 @@ export function createScreenshotRouter(): Router {
   router.post(
     "/",
     validateScreenshotRequest,
-    asyncHandler(async (_req: Request, res: Response) => {
+    async (_req: Request, res: Response) => {
       const opts = validatedRequest(res);
 
       const result = await capture(opts);
       const capturedAt = new Date();
 
       const id = createJobId();
-      const filename = buildFilename(opts.url, opts.width, opts.height, opts.format, capturedAt);
+      const filename = buildFilename(
+        opts.url,
+        opts.width,
+        opts.height,
+        opts.format,
+        capturedAt,
+      );
       const mimeType = mimeTypeFor(opts.format);
       const buffer = Buffer.from(result.buffer);
 
@@ -91,16 +96,16 @@ export function createScreenshotRouter(): Router {
         image: `data:${mimeType};base64,${buffer.toString("base64")}`,
       };
       res.json({ ok: true, data });
-    }),
+    },
   );
 
   router.get("/:id", (req: Request, res: Response) => {
-    const record = requireJob(req.params.id);
+    const record = requireJob(req.params.id as string);
     res.json({ ok: true, data: record.meta });
   });
 
   router.get("/:id/download", (req: Request, res: Response) => {
-    const record = requireJob(req.params.id);
+    const record = requireJob(req.params.id as string);
 
     const override = req.query.filename;
     const filename = typeof override === "string" && override.length > 0
