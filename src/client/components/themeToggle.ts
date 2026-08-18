@@ -23,6 +23,7 @@
 // agree, because they all read off `OPPOSITE[theme]` in the same render pass.
 
 import { $, on, setData, win } from "../dom.ts";
+import { translate } from "../i18n.ts";
 import type { Store, Theme } from "../store.ts";
 
 export const THEME_STORAGE_KEY = "urlshot:theme";
@@ -30,8 +31,15 @@ export const THEME_STORAGE_KEY = "urlshot:theme";
 /** The theme a click on the current scheme produces. */
 const OPPOSITE: Record<Theme, Theme> = { light: "dark", dark: "light" };
 
-/** Display prose for a theme, as shown when that theme is the *target*. */
-const MODE_LABEL: Record<Theme, string> = { dark: "Dark mode", light: "Light mode" };
+/** i18n keys for a theme's label and switch action, keyed by the TARGET theme. */
+const LABEL_KEY: Record<Theme, "theme.dark" | "theme.light"> = {
+  dark: "theme.dark",
+  light: "theme.light",
+};
+const ACTION_KEY: Record<Theme, "theme.action.dark" | "theme.action.light"> = {
+  dark: "theme.action.dark",
+  light: "theme.action.light",
+};
 
 interface ThemeMediaQuery {
   matches?: boolean;
@@ -94,12 +102,14 @@ export function mountThemeToggle(root: ParentNode, store: Store): void {
     btn.setAttribute("aria-pressed", String(theme === "dark"));
     // Icon + prose both describe the scheme a click produces.
     const target = OPPOSITE[theme];
+    const lang = store.getState().lang;
     setPartHidden(sun, target !== "light");
     setPartHidden(moon, target !== "dark");
-    const action = `Switch to ${target} mode`;
+    const action = translate(lang, ACTION_KEY[target]);
     btn.setAttribute("aria-label", action);
     btn.title = action;
-    if (label.textContent !== MODE_LABEL[target]) label.textContent = MODE_LABEL[target];
+    const labelText = translate(lang, LABEL_KEY[target]);
+    if (label.textContent !== labelText) label.textContent = labelText;
   };
 
   on(btn, "click", () => {

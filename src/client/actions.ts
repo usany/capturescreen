@@ -17,6 +17,7 @@
 
 import { requestScreenshot, toStoreError } from "./api.ts";
 import { preloadImage } from "./dom.ts";
+import { translate } from "./i18n.ts";
 import type { Store } from "./store.ts";
 import type { ImageFormat } from "../types/api.ts";
 import { validateUrlShape } from "./components/urlInput.ts";
@@ -45,7 +46,7 @@ export function createActions(store: Store): Actions {
         store.setState({
           status: "error",
           result: null,
-          error: { code: "INVALID_URL", message: check.reason ?? "Enter a valid http(s) URL" },
+          error: { code: "INVALID_URL", message: translate(state.lang, "url.invalid") },
         });
         return false;
       }

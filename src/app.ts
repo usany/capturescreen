@@ -16,6 +16,7 @@
 import express, { type Express } from "express";
 import { fileURLToPath } from "node:url";
 import { mountRoutes } from "./routes/index.ts";
+import { createLangRouter } from "./routes/lang.route.ts";
 import { errorMiddleware } from "./middleware/error.middleware.ts";
 import { notFoundMiddleware } from "./middleware/notFound.middleware.ts";
 
@@ -33,6 +34,10 @@ export function createApp(): Express {
   app.use(express.json({ limit: "1mb" }));
 
   mountRoutes(app);
+
+  // Direct /en and /ko language pages (cookie + serve the single index.html)
+  // before the static handler so they own those paths.
+  app.use(createLangRouter(PUBLIC_DIR));
 
   app.use(express.static(PUBLIC_DIR, { extensions: ["html"] }));
 

@@ -18,6 +18,7 @@
 // but `reset-size-btn` always re-reads the *live* screen, never the stored copy.
 
 import { $, on, setHidden, setText, win } from "../dom.ts";
+import { translate } from "../i18n.ts";
 import type { Store } from "../store.ts";
 
 export const SIZE_STORAGE_KEY = "urlshot:size";
@@ -91,13 +92,13 @@ export function getInitialSize(): Size {
   return readStoredSize() ?? getScreenDefaults();
 }
 
-function describeProblem(size: Size): string | null {
+function describeProblemKey(size: Size): "size.widthRange" | "size.heightRange" | null {
   const { minWidth, maxWidth, minHeight, maxHeight } = SIZE_LIMITS;
   if (!Number.isFinite(size.width) || size.width < minWidth || size.width > maxWidth) {
-    return `Width must be between ${minWidth} and ${maxWidth}.`;
+    return "size.widthRange";
   }
   if (!Number.isFinite(size.height) || size.height < minHeight || size.height > maxHeight) {
-    return `Height must be between ${minHeight} and ${maxHeight}.`;
+    return "size.heightRange";
   }
   return null;
 }
@@ -116,14 +117,19 @@ export function mountSizeControls(root: ParentNode, store: Store): void {
 
   const commit = () => {
     const size = readInputs();
-    const problem = describeProblem(size);
+    const problemKey = describeProblemKey(size);
 
-    setText(errorEl, problem ?? "");
-    setHidden(errorEl, problem === null);
+    const { lang } = store.getState();
+    const bounds = { ...SIZE_LIMITS } as Record<string, number>;
+    setText(
+      errorEl,
+      problemKey ? translate(lang, problemKey, bounds) : "",
+    );
+    setHidden(errorEl, problemKey === null);
 
     // Only a usable pair reaches the store and localStorage. A half-typed "12"
     // on its way to "1280" must not overwrite a good remembered value.
-    if (problem === null) {
+    if (problemKey === null) {
       store.setState(size);
       writeStoredSize(size);
     }
@@ -138,7 +144,10 @@ export function mountSizeControls(root: ParentNode, store: Store): void {
     heightInput.value = String(defaults.height);
     store.setState(defaults);
     writeStoredSize(defaults);
-    setHidden(errorEl, describeProblem(defaults) === null);
+    const key = describeProblemKey(defaults);
+    const { lang } = store.getState();
+    setText(errorEl, key ? translate(lang, key, { ...SIZE_LIMITS }) : "");
+    setHidden(errorEl, key === null);
   });
 
   on(fullPageToggle, "change", () => {
@@ -159,5 +168,7 @@ export function mountSizeControls(root: ParentNode, store: Store): void {
   widthInput.value = String(initial.width);
   heightInput.value = String(initial.height);
   fullPageToggle.checked = initial.fullPage;
-  setHidden(errorEl, describeProblem(initial) === null);
+  const initialKey = describeProblemKey(initial);
+  setHidden(errorEl, initialKey === null);
+  setText(errorEl, initialKey ? translate(initial.lang, initialKey, { ...SIZE_LIMITS }) : "");
 }

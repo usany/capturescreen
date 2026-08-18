@@ -17,6 +17,8 @@ import type { AppState } from "./store.ts";
 import { createActions } from "./actions.ts";
 import { getInitialSize } from "./components/sizeControls.ts";
 import { getInitialTheme, mountThemeToggle } from "./components/themeToggle.ts";
+import { initialLang } from "./i18n.ts";
+import { mountLangToggle } from "./components/langToggle.ts";
 import { mountUrlInput } from "./components/urlInput.ts";
 import { mountSizeControls } from "./components/sizeControls.ts";
 import { mountFormatSelector } from "./components/formatSelector.ts";
@@ -29,6 +31,8 @@ function initialState(): AppState {
   // for why those two are not the same rule.
   const { width, height } = getInitialSize();
   return {
+    // Cookie wins; `/en` and `/ko` are the URL-side way to set it.
+    lang: initialLang(),
     url: "",
     width,
     height,
@@ -54,6 +58,7 @@ function start(): void {
   // the first keystroke can arrive.
   mountStatusBanner(document, store, actions);
   mountThemeToggle(document, store);
+  mountLangToggle(document, store);
   mountUrlInput(document, store, actions);
   mountSizeControls(document, store);
   mountFormatSelector(document, store);

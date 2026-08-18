@@ -20,16 +20,17 @@
 
 import { $, on, setData, setHidden, setText } from "../dom.ts";
 import { fetchStatus } from "../api.ts";
+import { translate } from "../i18n.ts";
 import type { AppState, Store } from "../store.ts";
 import type { Actions } from "../actions.ts";
 import { validateUrlShape } from "./urlInput.ts";
 
-const LABELS: Record<string, string> = {
-  ready: "Ready",
-  starting: "Starting…",
-  degraded: "Degraded",
-  unreachable: "Unreachable",
-  checking: "Checking…",
+const LABEL_KEYS: Record<string, string> = {
+  ready: "status.ready",
+  starting: "status.starting",
+  degraded: "status.degraded",
+  unreachable: "status.unreachable",
+  checking: "status.checking",
 };
 
 export function mountStatusBanner(root: ParentNode, store: Store, actions: Actions): void {
@@ -39,7 +40,11 @@ export function mountStatusBanner(root: ParentNode, store: Store, actions: Actio
 
   const setBannerState = (key: string) => {
     setData(banner, "status", key);
-    setText(text, LABELS[key] ?? key);
+    const i18nKey = LABEL_KEYS[key];
+    const label = i18nKey
+      ? translate(store.getState().lang, i18nKey as Parameters<typeof translate>[1])
+      : key;
+    setText(text, label);
     setHidden(banner, false);
   };
 
@@ -52,7 +57,10 @@ export function mountStatusBanner(root: ParentNode, store: Store, actions: Actio
     const busy = state.status === "loading";
     captureBtn.disabled = busy || !urlOk;
     captureBtn.setAttribute("aria-busy", busy ? "true" : "false");
-    setText(captureBtn, busy ? "Capturing…" : "Capture");
+    setText(
+      captureBtn,
+      busy ? translate(state.lang, "capture.busy") : translate(state.lang, "capture.action"),
+    );
   };
 
   on(captureBtn, "click", () => void actions.capture());

@@ -26,7 +26,7 @@
       <header class="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 class="text-2xl font-semibold tracking-tight">URL Screenshot</h1>
-          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400" data-i18n="app.tagline">
             Capture any page at any viewport size, then download it as PNG or JPEG.
           </p>
         </div>
@@ -87,6 +87,19 @@
             </svg>
             <span data-testid="theme-label">Dark mode</span>
           </button>
+
+          <!-- Language toggle: shows the TARGET language code (cf.
+               src/client/components/langToggle.ts). Mirrors the server's
+               /en and /ko routes by writing the same `lang` cookie. -->
+          <button
+            data-testid="lang-toggle"
+            type="button"
+            aria-label="Switch to Korean"
+            title="Switch to Korean"
+            class="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:focus:ring-slate-600"
+          >
+            <span data-testid="lang-label">KO</span>
+          </button>
         </div>
       </header>
 
@@ -140,7 +153,8 @@
               type="checkbox"
               class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300 dark:border-slate-600 dark:bg-slate-800 dark:text-blue-500 dark:focus:ring-blue-900"
             />
-            <span>Auto-capture when I stop typing</span>
+            <span id="auto-capture-label" data-i18n="autoCapture"
+            >Auto-capture when I stop typing</span>
           </label>
         </div>
 
@@ -153,7 +167,7 @@
               <label
                 for="width-input"
                 class="text-sm font-medium text-slate-700 dark:text-slate-300"
-              >Width</label>
+              ><span data-i18n="size.width">Width</span></label>
               <input
                 id="width-input"
                 data-testid="width-input"
@@ -172,7 +186,7 @@
               <label
                 for="height-input"
                 class="text-sm font-medium text-slate-700 dark:text-slate-300"
-              >Height</label>
+              ><span data-i18n="size.height">Height</span></label>
               <input
                 id="height-input"
                 data-testid="height-input"
@@ -213,7 +227,7 @@
             <label
               for="format-select"
               class="text-sm font-medium text-slate-700 dark:text-slate-300"
-            >Format</label>
+            ><span data-i18n="format.label">Format</span></label>
             <select
               id="format-select"
               data-testid="format-select"
@@ -230,7 +244,7 @@
               for="quality-slider"
               class="text-sm font-medium text-slate-700 dark:text-slate-300"
             >
-              Quality <span
+              <span data-i18n="quality.label">Quality</span> <span
                 data-testid="quality-value"
                 class="tabular-nums text-slate-500 dark:text-slate-400"
               >90</span>
@@ -255,7 +269,7 @@
               type="checkbox"
               class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300 dark:border-slate-600 dark:bg-slate-800 dark:text-blue-500 dark:focus:ring-blue-900"
             />
-            <span>Full page</span>
+            <span data-i18n="fullpage">Full page</span>
           </label>
         </div>
       </section>
@@ -272,6 +286,7 @@
           <div
             data-testid="preview-empty"
             class="text-center text-sm text-slate-400 dark:text-slate-500"
+            data-i18n="preview.empty"
           >
             Preview will appear here
           </div>
@@ -283,7 +298,7 @@
             class="flex flex-col items-center gap-3 text-sm text-slate-500 dark:text-slate-400"
           >
             <span class="spinner-ring block h-9 w-9" aria-hidden="true"></span>
-            <span>Capturing…</span>
+            <span data-i18n="capture.busy">Capturing…</span>
           </div>
 
           <!-- max-w-full h-auto: a 1980-wide capture scales down to fit while
@@ -323,6 +338,7 @@
         <a
           data-testid="download-btn"
           class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white dark:focus:ring-slate-500"
+          data-i18n="download"
         >
           Download
         </a>
@@ -330,6 +346,7 @@
           data-testid="download-png-btn"
           type="button"
           class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:focus:ring-slate-600"
+          data-i18n="download.png"
         >
           Download as PNG
         </button>
@@ -337,6 +354,7 @@
           data-testid="download-jpeg-btn"
           type="button"
           class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:focus:ring-slate-600"
+          data-i18n="download.jpeg"
         >
           Download as JPEG
         </button>

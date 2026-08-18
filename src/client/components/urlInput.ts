@@ -18,6 +18,7 @@
 // keystroke.
 
 import { $, debounce, on, setHidden, setText } from "../dom.ts";
+import { translate } from "../i18n.ts";
 import type { Store } from "../store.ts";
 import type { Actions } from "../actions.ts";
 
@@ -25,6 +26,9 @@ const VALIDATE_DEBOUNCE_MS = 400;
 const AUTO_CAPTURE_IDLE_MS = 900;
 
 const INVALID_MESSAGE = "Enter a valid http(s) URL";
+
+/** i18n key for the single validation complaint the UI shows. */
+const INVALID_KEY = "url.invalid";
 
 export interface UrlCheck {
   valid: boolean;
@@ -85,7 +89,7 @@ export function mountUrlInput(root: ParentNode, store: Store, actions: Actions):
     // An untouched field is not an error state — only complain once the user has
     // typed something that cannot work.
     const showError = value.trim().length > 0 && !check.valid;
-    setText(errorEl, check.reason ?? INVALID_MESSAGE);
+    setText(errorEl, translate(store.getState().lang, INVALID_KEY));
     setHidden(errorEl, !showError);
   };
 

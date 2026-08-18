@@ -11,6 +11,7 @@
 // without it a `setState` inside a subscriber would recurse forever.
 
 import type { ImageFormat, ScreenshotData } from "../types/api.ts";
+import type { Lang } from "./i18n.ts";
 
 /** Lifecycle of the current capture. Mirrored onto `capture-btn[data-state]`. */
 export type CaptureStatus = "idle" | "loading" | "success" | "error";
@@ -19,6 +20,8 @@ export type CaptureStatus = "idle" | "loading" | "success" | "error";
 export type Theme = "light" | "dark";
 
 export interface AppState {
+  /** UI language. Persisted in the `lang` cookie; `/en` and `/ko` set it via redirect. */
+  lang: Lang;
   /** Raw text of `url-input`, updated on the 400 ms debounce (not per keystroke). */
   url: string;
   width: number;
