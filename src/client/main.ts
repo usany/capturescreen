@@ -24,8 +24,6 @@ import { mountSizeControls } from "./components/sizeControls.ts";
 import { mountFormatSelector } from "./components/formatSelector.ts";
 import { mountPreviewPane } from "./components/previewPane.ts";
 import { mountDownloadBar } from "./components/downloadBar.ts";
-import { mountStatusBanner } from "./components/statusBanner.ts";
-
 function initialState(): AppState {
   // Screen size, or a remembered size from a previous visit. See sizeControls
   // for why those two are not the same rule.
@@ -53,10 +51,6 @@ function start(): void {
   const store = createStore(initialState());
   const actions = createActions(store);
 
-  // Status banner first: it owns `capture-btn`, and mounting it before the URL
-  // field means the button is already in its correct disabled state by the time
-  // the first keystroke can arrive.
-  mountStatusBanner(document, store, actions);
   mountThemeToggle(document, store);
   mountLangToggle(document, store);
   mountUrlInput(document, store, actions);

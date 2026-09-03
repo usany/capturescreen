@@ -1,0 +1,24 @@
+Task test deno run -A npm:@playwright/test@1.62.0 test "tests/e2e/toggles.spec.ts"
+
+Running 1 test using 1 worker
+
+Button data-lang before click: en
+Clicking lang toggle button...
+Button data-lang after click: ko
+App state after click: {
+  lang: "ko",
+  url: "",
+  width: 1280,
+  height: 720,
+  format: "png",
+  quality: 90,
+  fullPage: false,
+  autoCapture: false,
+  theme: "light",
+  status: "idle",
+  result: null,
+  error: null
+}
+  ?? 1 [e2e] ??tests\e2e\toggles.spec.ts:3:1 ??lang toggle switches between en and ko (1.6s)
+
+  1 passed (2.5s)
