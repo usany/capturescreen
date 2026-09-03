@@ -43,7 +43,7 @@ RUN deno run -A npm:playwright@1.62.0 install chromium \
 
 # Layer 3 — app source + generated client assets (CSS bundle, JS bundle).
 COPY . .
-RUN deno task build
+RUN deno task build && echo "=== CSS Build Output ===" && ls -la public/styles/ 2>&1 || echo "No styles dir"
 
 ENV PORT=3000
 EXPOSE 3000
