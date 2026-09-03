@@ -24,6 +24,7 @@ import { mountSizeControls } from "./components/sizeControls.ts";
 import { mountFormatSelector } from "./components/formatSelector.ts";
 import { mountPreviewPane } from "./components/previewPane.ts";
 import { mountDownloadBar } from "./components/downloadBar.ts";
+import { mountStatusBanner } from "./components/statusBanner.ts";
 function initialState(): AppState {
   // Screen size, or a remembered size from a previous visit. See sizeControls
   // for why those two are not the same rule.
@@ -58,6 +59,7 @@ function start(): void {
   mountFormatSelector(document, store);
   mountPreviewPane(document, store);
   mountDownloadBar(document, store, actions);
+  mountStatusBanner(document, store, actions);
 
   // Read-only introspection hook for debugging and for e2e assertions that are
   // awkward to express through the DOM. Intentionally exposes no setter.
