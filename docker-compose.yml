@@ -1,6 +1,8 @@
 services:
   url-screenshot:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.vercel
     image: url-screenshot:latest
     ports:
       - "3000:3000"
