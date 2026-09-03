@@ -16,4 +16,3 @@ playwright-report/
 
 # Rebuilt inside the image by `deno task build`
 public/js/app.js
-public/styles/tailwind.css
