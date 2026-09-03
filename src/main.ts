@@ -44,7 +44,13 @@ async function shutdown(signal: string): Promise<void> {
   setTimeout(() => Deno.exit(0), 3_000);
 }
 
-for (const signal of ["SIGINT", "SIGTERM"] as const) {
+// Windows only supports SIGINT, SIGBREAK, and SIGUP.
+// Unix/Linux support SIGTERM as well.
+const signals = Deno.build.os === "windows" 
+  ? (["SIGINT"] as const)
+  : (["SIGINT", "SIGTERM"] as const);
+
+for (const signal of signals) {
   Deno.addSignalListener(signal, () => {
     void shutdown(signal);
   });
